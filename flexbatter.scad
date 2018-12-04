@@ -50,8 +50,8 @@
 */
 
 /* [Battery Type and Configuration] */
-cell = 1; //[0:AAA, 1:AA, 2:C, 3:D, 4:Li18650, 5:Li18650P, 6:CR123A, 7:Li26650]
-ParallelCells = 3; //[1:10]
+cell = 8; //[0:AAA, 1:AA, 2:C, 3:D, 4:Li18650, 5:Li18650P, 6:CR123A, 7:Li26650, 8:ANY9V]
+ParallelCells = 1; //[1:10]
 SeriesCells = 1; //[1:3]
 AlternateSymbols = 1; //[0:False, 1:True]
 
@@ -201,8 +201,17 @@ Li26650 = [
   ["lenCorrect", 0],      // lcorr:   length correction for multi-cell compartments 
 ];
 
+ANY9V = [
+  ["len", 50],          // l:       length of cell
+  ["dia", 26.5],          // d:       diameter of cell
+  ["cellHeight", 0.66],   // hf:      relative height of cell (1 = full diameter)
+  ["screwHole", 3],       // shd:     screw hole diamter
+  ["eps", 2],          // eps:     extra diameter space
+  ["lenCorrect", 0],      // lcorr:   length correction for multi-cell compartments 
+];
+
 // array for customizer
-batteryTypes = [AAA, AA, C, D, Li18650, Li18650P, CR123A, Li26650];
+batteryTypes = [AAA, AA, C, D, Li18650, Li18650P, CR123A, Li26650, ANY9V];
 
 
 module battery(type = AA, n = 1, m = 1, alt = 1) {
