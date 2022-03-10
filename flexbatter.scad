@@ -318,7 +318,7 @@ module sline(angle,radius,i,w,h){
       //assign(r=abs(radius[i]))assign(a=angle[i])
          translate([a?r:0,0,0]){
 	    translate([-w/2,-r-0.01,0])cube([w,0.02,h]); // tiny overlap!
-            if(a)arc(r-w/2,r+w/2,0,a,h=h);
+            if(a)arc(r-w/2,r+w/2,h,a,0);
 	    else if(r>0)translate([-w/2,-r,0])cube([w,r,h]);
       if(i+1<len(angle))
            rotate(angle[i])
