@@ -21,43 +21,50 @@
    
    Given that the printed plastic spring needs to be flexible, ABS is the material
    of choice here.
- 
- 
-   2014-09-09 Heinz Spiess, Switzerland
-   2015-07-25 multi-cell compartments added
- 
+
    released under Creative Commons - Attribution - Share Alike licence (CC BY-SA)
-
-
-   Updated by Aaron Ciuffo 
-    25 May 2021
-      * added Li21700 cell provided by Mauro Vassovinio https://www.thingiverse.com/kabuk
-
-    5 April 2016
-      * updated engraving to alternate +/-; -/+; +/- in cells
-        - thanks to [infinigrove](http://www.thingiverse.com/infinigrove)
-        
-    1 April 2016
-   Changes:
+ 
+   Changes: 
+   2014-09-09 Heinz Spiess, Switzerland
+     * created
+   2015-07-25 Heinz Spiess, Switzerland
+     * multi-cell compartments added
+   2016-04-01 Aaron Ciuffo 
      * removed depricated assign() statements
      * switched to block quotes
      * added meta-module battery() to make library calls easier
      * implemented battery definition and lookup to make library calls easier
      * added customizer section
      * fixed missing cutouts inside parallel cells on Y face as per Heinz suggestion
+   2016-04-05 Aaron Ciuffo 
+     * updated engraving to alternate +/-; -/+; +/- in cells
+       thanks to [infinigrove](http://www.thingiverse.com/infinigrove)
+   2021-05-25 Aaron Ciuffo 
+     * added Li21700 cell provided by Mauro Vassovinio
+       https://www.thingiverse.com/kabuk
+   2022-03-10 Henk Vergonet
+     * added ANY9V type https://github.com/damscot/flexbatt
+     * Complete overhaul of the battery types administration
 
-
-    Usage:
-      * battery(type = <battery name>, n = <num parallel cells>, m = <num series cells>);
-
-
+   Usage:
+     * battery(type = <battery name>, n = <num parallel cells>, m = <num series cells>);
 */
 
-/* [Battery Type and Configuration] */
-cell = 1; //[0:AAA, 1:AA, 2:C, 3:D, 4:Li18650, 5:Li18650P, 6:CR123A, 7:Li26650, 8:Li21700]
-ParallelCells = 3; //[1:10]
-SeriesCells = 1; //[1:3]
-AlternateSymbols = 1; //[0:False, 1:True]
+/* [Battery Type and Configuration]
+
+<cell> is one of:
+  "AA", "AAA", "C", "CR123A", "D", "Li18650", "Li18650P", "Li26650", "Li21700", "ANY9V"
+*/
+cell = "Li18650"; 
+ParallelCells = 3;    //[1:10]
+SeriesCells = 1;      //[1:3]
+AlternateSymbols = 0; //[0:False, 1:True]
+
+module customizer() {
+  color("gold")
+  battery(type = cell, n = ParallelCells, m = SeriesCells, alt = AlternateSymbols);
+}
+customizer();
 
 
 /* [Hidden] */
@@ -67,98 +74,9 @@ ew=0.56;   // extrusion width
 eh=0.25;   // extrusion height
 
 
-// Defined battery types
-/*
-module flexbatter18650(n=1,m=1,deepen=0,df=1,oh=0){
-   flexbatter(n=n,m=m,deepen=deepen,df=df,oh=oh,l=65.2,lcorr=0.3,d=18.4,hf=0.75,shd=3,eps=0.28);
-}  
-*/
-Li18650 = [
-  ["len", 65.2],            // l:       length of cell
-  ["dia", 18.4],          // d:       diameter of cell
-  ["cellHeight", 0.75],   // hf:      relative height of cell (1 = full diameter)
-  ["screwHole", 3],     // shd:     screw hole diamter
-  ["eps", 0.28],          // eps:     extra diameter space
-  ["overHang", 0],        // oh:      overhang to avoid lifting of cell
-  ["lenCorrect", 0.3],    // lcorr:   length correction for multi-cell compartments 
-  ["cutDepth", 0],        // deepen:  relative deepning for side grip
-  ["df", 1]               // df:      relative deepening radius
-];
-
-/*
-module flexbatter18650P(n=1,m=1){
-   flexbatter(n=n,m=m,l=70,lcorr=0,d=18.4,hf=0.75,shd=3,eps=0.28);
-} 
-*/
-Li18650P = [
-  ["len", 70],            // l:       length of cell
-  ["dia", 18.4],          // d:       diameter of cell
-  ["cellHeight", 0.75],   // hf:      relative height of cell (1 = full diameter)
-  ["screwHole", 3],       // shd:     screw hole diamter
-  ["eps", 0.28],          // eps:     extra diameter space
-  ["lenCorrect", 0],      // lcorr:   length correction for multi-cell compartments 
-];
-
-
-/*
-module flexbatterCR123A(n=1,m=1){
-   flexbatter(n=n,m=m,l=35.1,lcorr=0,d=16.7,hf=0.75,shd=3,xchan=[0.5],eps=0.28);
-}  
-*/
-CR123A = [
-  ["len", 35.1],            // l:       length of cell
-  ["dia", 16.7],            // d:       diameter of cell
-  ["cellHeight", 0.75],     // hf:      relative height of cell (1 = full diameter)
-  ["screwHole", 3],         // shd:     screw hole diamter
-  ["eps", 0.28],            // eps:     extra diameter space
-  ["overHang", 0],          // oh:      overhang to avoid lifting of cell
-  ["springExtra", 0],       // el:      extra spring length
-  ["xChan", [0.5]],         // xchan:
-];
-
-/*
-module flexbatterD(n=1,m=1){
-   flexbatter(n=n,m=m,l=61.5,lcorr=0,d=34.0,hf=0.75,shd=3,eps=0.28);
-} 
-*/
-D = [
-  ["len", 61.5],            // l:       length of cell
-  ["dia", 34.0],            // d:       diameter of cell
-  ["cellHeight", 0.75],     // hf:      relative height of cell (1 = full diameter)
-  ["screwHole", 3],         // shd:     screw hole diamter
-  ["eps", 0.28],            // eps:     extra diameter space
-  ["lenCorrect", 0],        // lcorr:   length correction for multi-cell compartments 
-  ["df", .01],
-  ["cutDepth", 0.8],
-  ["overHang", ew]
-];
-
-
-
-/*
-module flexbatterC(n=1,m=1,deepen=0,df=1,oh=0){
-   flexbatter(n=n,m=m,deepen=deepen,df=df,oh=oh,l=49.6,lcorr=2,d=26.4,hf=0.75,shd=3,eps=0.28);
-}  
-*/
-C = [
-  ["len", 49.6],            // l:       length of cell
-  ["dia", 26.4],            // d:       diameter of cell
-  ["cellHeight", 0.75],     // hf:      relative height of cell (1 = full diameter)
-  ["screwHole", 3],         // shd:     screw hole diamter
-  ["eps", 0.28],            // eps:     extra diameter space
-  ["overHang", ew],         // oh:      overhang to avoid lifting of cell
-  ["springExtra", 0],       // el:      extra spring length
-  ["lenCorrect", 2],        // lcorr:   length correction for multi-cell compartments 
-  ["cutDepth", 0.67],       // deepen:  relative deepning for side grip
-  ["df", 0.07]              // df:      relative deepening radius
-];
-
-/*
-module flexbatterAA(n=1,m=1,Xdeepen=0,Xdf=1,Xoh=0){
-   flexbatter(n=n,m=m,Xdeepen=deepen,Xdf=df,oh=oh,Xl=50.0,Xlcorr=1.6,Xd=14.4,Xhf=0.80,Xshd=2.5,Xel=0.5,eps=0.28);
-}  
-*/
-AA = [
+// Defined battery types, keep in sorted order
+battery_types = [
+[ "AA", [
   ["len", 50],            // l:       length of cell
   ["dia", 14.4],          // d:       diameter of cell
   ["cellHeight", 0.80],   // hf:      relative height of cell (1 = full diameter)
@@ -166,18 +84,11 @@ AA = [
   ["eps", 0.28],          // eps:     extra diameter space
   ["overHang", ew],       // oh:      overhang to avoid lifting of cell
   ["springExtra", 0.5],   // el:      extra spring length
-  ["lenCorrect", 1.6],    // lcorr:   length correction for multi-cell compartments 
+  ["lenCorrect", 1.6],    // lcorr:   length correction for multi-cell compartments
   ["cutDepth", 0.7],      // deepen:  relative deepning for side grip
   ["df", 0.25]            // df:      relative deepening radius
-];
-
-
-/*
-module flexbatterAAA(n=1,m=1,deepen=0,df=1,oh=0){
-   flexbatter(n=n,m=m,deepen=deepen,df=df,oh=oh,l=44.5,lcorr=1.6,d=10.5,hf=0.84,shd=2,el=1,xchan=[0.5],eps=0.2);
-}  
-*/
-AAA = [
+] ],
+[ "AAA", [
   ["len", 44.5],          // l:       length of cell
   ["dia", 10.5],          // d:       diameter of cell
   ["cellHeight", 0.84],   // hf:      relative height of cell (1 = full diameter)
@@ -186,58 +97,111 @@ AAA = [
   ["overHang", 0.4],      // oh:      overhang to avoid lifting of cell
   ["springExtra", 1],     // el:      extra spring length
   ["xChan", 0.5],         // xchan:   relative position of traversal wire channels
-  ["lenCorrect", 1.6],    // lcorr:   length correction for multi-cell compartments 
+  ["lenCorrect", 1.6],    // lcorr:   length correction for multi-cell compartments
   ["cutDepth", 0.70],     // deepen:  relative deepning for side grip
   ["df", .25]             // df:      relative deepening radius
-];
-
-/*
-module flexbatter26650(n=1,m=1){
-   flexbatter(n=n,m=m,l=65.7,lcorr=0,d=26.4,hf=0.72,shd=3,eps=0.28);
-}  
-*/
-Li26650 = [
+] ],
+[ "C", [
+  ["len", 49.6],            // l:       length of cell
+  ["dia", 26.4],            // d:       diameter of cell
+  ["cellHeight", 0.75],     // hf:      relative height of cell (1 = full diameter)
+  ["screwHole", 3],         // shd:     screw hole diamter
+  ["eps", 0.28],            // eps:     extra diameter space
+  ["overHang", ew],         // oh:      overhang to avoid lifting of cell
+  ["springExtra", 0],       // el:      extra spring length
+  ["lenCorrect", 2],        // lcorr:   length correction for multi-cell compartments
+  ["cutDepth", 0.67],       // deepen:  relative deepning for side grip
+  ["df", 0.07]              // df:      relative deepening radius
+] ],
+[ "CR123A", [
+  ["len", 35.1],            // l:       length of cell
+  ["dia", 16.7],            // d:       diameter of cell
+  ["cellHeight", 0.75],     // hf:      relative height of cell (1 = full diameter)
+  ["screwHole", 3],         // shd:     screw hole diamter
+  ["eps", 0.28],            // eps:     extra diameter space
+  ["overHang", 0],          // oh:      overhang to avoid lifting of cell
+  ["springExtra", 0],       // el:      extra spring length
+  ["xChan", [0.5]],         // xchan:
+] ],
+[ "D", [
+  ["len", 61.5],            // l:       length of cell
+  ["dia", 34.0],            // d:       diameter of cell
+  ["cellHeight", 0.75],     // hf:      relative height of cell (1 = full diameter)
+  ["screwHole", 3],         // shd:     screw hole diamter
+  ["eps", 0.28],            // eps:     extra diameter space
+  ["lenCorrect", 0],        // lcorr:   length correction for multi-cell compartments
+  ["df", .01],
+  ["cutDepth", 0.8],
+  ["overHang", ew]
+] ],
+[ "Li18650", [
+  ["len", 65.2],            // l:       length of cell
+  ["dia", 18.4],          // d:       diameter of cell
+  ["cellHeight", 0.75],   // hf:      relative height of cell (1 = full diameter)
+  ["screwHole", 3],     // shd:     screw hole diamter
+  ["eps", 0.28],          // eps:     extra diameter space
+  ["overHang", 0],        // oh:      overhang to avoid lifting of cell
+  ["lenCorrect", 0.3],    // lcorr:   length correction for multi-cell compartments
+  ["cutDepth", 0],        // deepen:  relative deepning for side grip
+  ["df", 1]               // df:      relative deepening radius
+] ],
+[ "Li18650P", [
+  ["len", 70],            // l:       length of cell
+  ["dia", 18.4],          // d:       diameter of cell
+  ["cellHeight", 0.75],   // hf:      relative height of cell (1 = full diameter)
+  ["screwHole", 3],       // shd:     screw hole diamter
+  ["eps", 0.28],          // eps:     extra diameter space
+  ["lenCorrect", 0],      // lcorr:   length correction for multi-cell compartments
+] ],
+[ "Li26650", [
   ["len", 65.7],          // l:       length of cell
   ["dia", 26.4],          // d:       diameter of cell
   ["cellHeight", 0.72],   // hf:      relative height of cell (1 = full diameter)
   ["screwHole", 3],       // shd:     screw hole diamter
   ["eps", 0.28],          // eps:     extra diameter space
-  ["lenCorrect", 0],      // lcorr:   length correction for multi-cell compartments 
-];
-
-/*
-module flexbatter21700(n=1,m=1,deepen=0,df=1,oh=0){
-   flexbatter(n=n,m=m,deepen=deepen,df=df,oh=oh,l=70.2,lcorr=0.3,d=21.5,hf=0.75,shd=3,eps=0.28);
-}  
-*/
-Li21700 = [
+  ["lenCorrect", 0],      // lcorr:   length correction for multi-cell compartments
+] ],
+[ "Li21700", [
   ["len", 70.2],          // l:       length of cell
   ["dia", 21.5],          // d:       diameter of cell
   ["cellHeight", 0.75],   // hf:      relative height of cell (1 = full diameter)
   ["screwHole", 3],       // shd:     screw hole diamter
   ["eps", 0.28],          // eps:     extra diameter space
-  ["lenCorrect", 0.3],    // lcorr:   length correction for multi-cell compartments 
-];
+  ["lenCorrect", 0.3],    // lcorr:   length correction for multi-cell compartments
+] ],
+
+/* specials */
+[ "ANY9V", [
+  ["len", 50],            // l:       length of cell
+  ["dia", 26.5],          // d:       diameter of cell
+  ["cellHeight", 0.66],   // hf:      relative height of cell (1 = full diameter)
+  ["screwHole", 3],       // shd:     screw hole diamter
+  ["eps", 2],             // eps:     extra diameter space
+  ["lenCorrect", 0],      // lcorr:   length correction for multi-cell compartments
+] ] ];
 
 
-// array for customizer
-batteryTypes = [AAA, AA, C, D, Li18650, Li18650P, CR123A, Li26650, Li21700 ];
-
-
-module battery(type = AA, n = 1, m = 1, alt = 1) {
+module battery(type = "AA", n = 1, m = 1, alt = 1) {
   // the search(["foo"], array, num_returns_per_match = 1) returns an array containing
   // the index of the element in array that contains "foo". Element 0 is the match
-  l = type[search(["len"], type, num_returns_per_match = 1)[0]][1];
-  d = type[search(["dia"], type, num_returns_per_match = 1)[0]][1];
-  hf = type[search(["cellHeight"], type, num_returns_per_match = 1)[0]][1];
-  shd = type[search(["screwHole"], type, num_returns_per_match = 1)[0]][1];
-  eps = type[search(["eps"], type, num_returns_per_match = 1)[0]][1];
-  oh = type[search(["overHang"], type, num_returns_per_match = 1)[0]][1];
-  el = type[search(["springExtra"], type, num_returns_per_match = 1)[0]][1];
-  xchan = type[search(["xChan"], type, num_returns_per_match = 1)[0]][1];
-  lcorr = type[search(["lenCorrect"], type, num_returns_per_match = 1)[0]][1];
-  deepen = type[search(["cutDepth"], type, num_returns_per_match = 1)[0]][1];
-  df = type[search(["df"], type, num_returns_per_match = 1)[0]][1];
+  dim = battery_types[search([type],battery_types, num_returns_per_match = 1)[0]][1];
+  //assert(dim, 
+    echo((dim ?
+    str("using: ", type) :
+    str(type," not found select one of: ", [ for(i=battery_types)i[0] ])))
+  //)
+    ;
+  l = dim[search(["len"], dim, num_returns_per_match = 1)[0]][1];
+  d = dim[search(["dia"], dim, num_returns_per_match = 1)[0]][1];
+  hf = dim[search(["cellHeight"], dim, num_returns_per_match = 1)[0]][1];
+  shd = dim[search(["screwHole"], dim, num_returns_per_match = 1)[0]][1];
+  eps = dim[search(["eps"], dim, num_returns_per_match = 1)[0]][1];
+  oh = dim[search(["overHang"], dim, num_returns_per_match = 1)[0]][1];
+  el = dim[search(["springExtra"], dim, num_returns_per_match = 1)[0]][1];
+  xchan = dim[search(["xChan"], dim, num_returns_per_match = 1)[0]][1];
+  lcorr = dim[search(["lenCorrect"], dim, num_returns_per_match = 1)[0]][1];
+  deepen = dim[search(["cutDepth"], dim, num_returns_per_match = 1)[0]][1];
+  df = dim[search(["df"], dim, num_returns_per_match = 1)[0]][1];
 
   flexbatter(
     n = n==undef ? 1 : n,                   // number of compartments side by side
@@ -250,7 +214,7 @@ module battery(type = AA, n = 1, m = 1, alt = 1) {
     oh = oh==undef ? 0 : oh,                // overhang to avoid lifting of cell
     el = el==undef ? 0 : el,                // extra spring length (needed for small cells)
     xchan = xchan==undef ? [1/4, 3/4] : xchan, // relative position of traversal wire channels
-    deepen = deepen==undef ? 0 : deepen,    // relative deepening for side grip of batteries 
+    deepen = deepen==undef ? 0 : deepen,    // relative deepening for side grip of batteries
     df = df==undef ? 1 : df,                // relative deepening radius
     lcorr = lcorr==undef ? 0 : lcorr,       // length correction for multicell compartments
     alt = alt,                              // alternate the battery symbols
@@ -258,15 +222,6 @@ module battery(type = AA, n = 1, m = 1, alt = 1) {
   );
 }
 
-module customizer() {
-  color("gold")
-  battery(type = batteryTypes[cell], n = ParallelCells, m = SeriesCells, alt = AlternateSymbols);
-}
-
-customizer();
-
-//battery(type = AA, n = 5, m = 1, alt = true);
-//flexbatter1xAAx3();
 
 // build a cube with chamfered edges
 module chamfered_cube(size,d=1){
@@ -307,9 +262,9 @@ module arc(r1,r2,h,a1=0,a2=0){
 //   angle[i] < 0  left turn / clockwise
 //   angle[i] = 0  straight segment with length radius[i]
 //
-                           
+
 // Heinz Spiess, 2014-09-06 (CC BY-SA)
-                           
+
 module sline(angle,radius,i,w,h){
    r = abs(radius[i]);
    a = angle[i];
@@ -318,7 +273,7 @@ module sline(angle,radius,i,w,h){
       //assign(r=abs(radius[i]))assign(a=angle[i])
          translate([a?r:0,0,0]){
 	    translate([-w/2,-r-0.01,0])cube([w,0.02,h]); // tiny overlap!
-            if(a)arc(r-w/2,r+w/2,0,a,h=h);
+            if(a)arc(r-w/2,r+w/2,h,a,0);
 	    else if(r>0)translate([-w/2,-r,0])cube([w,r,h]);
       if(i+1<len(angle))
            rotate(angle[i])
@@ -327,7 +282,7 @@ module sline(angle,radius,i,w,h){
   }
 }
 
-// moved this to the hidden section above - not sure what they do, but they're 
+// moved this to the hidden section above - not sure what they do, but they're
 // floating between modules here
 //ew=0.56;   // extrusion width
 //eh=0.25;   // extrusion height
@@ -349,7 +304,7 @@ module flexbatter(
   oh=0,            // overhang to avoid lifting of cell
   el=0,            // extra spring length (needed for small cells)
   xchan=[1/4,3/4], // relative position of traversal wire channels
-  deepen=0,        // relative deepening for side grip of batteries 
+  deepen=0,        // relative deepening for side grip of batteries
   df=1,            // relative deepening radius
   lcorr=0,         // length correction for multicell compartments
   alt = true,      // alternate the symbols
@@ -407,7 +362,7 @@ module flexbatter(
       
          // traversal bottom wire channels
          for(x=L*xchan)translate([x,-d/2-w-1,-eh]) rotate([-90,0,0])cylinder(r=wz/2,h=d+2*w+ws+2,$fn=6);
-   
+
          // grip deepening
 	 if(deepen!=0)
 	    for (j=[(deepen>0?0:m-1):m-1]) {
@@ -515,35 +470,35 @@ module flexbatter(
 /*
 module flexbatter18650(n=1,m=1,deepen=0,df=1,oh=0){
    flexbatter(n=n,m=m,deepen=deepen,df=df,oh=oh,l=65.2,lcorr=0.3,d=18.4,hf=0.75,shd=3,eps=0.28);
-}  
+}
 
 module flexbatter18650P(n=1,m=1){
    flexbatter(n=n,m=m,l=70,lcorr=0,d=18.4,hf=0.75,shd=3,eps=0.28);
-}  
+}
 
 module flexbatterCR123A(n=1,m=1){
    flexbatter(n=n,m=m,l=35.1,lcorr=0,d=16.7,hf=0.75,shd=3,xchan=[0.5],eps=0.28);
-}  
+}
 
 module flexbatterD(n=1,m=1){
    flexbatter(n=n,m=m,l=61.5,lcorr=0,d=34.0,hf=0.75,shd=3,eps=0.28);
-}  
+}
 
 module flexbatterC(n=1,m=1,deepen=0,df=1,oh=0){
-   flexbatter(n=n,m=m,deepen=deepen,df=df,oh=oh,l=49.6,lcorr=2,d=26.4,hf=0.75,shd=3,eps=0.28);
-}  
+  flexbatter(n=n,m=m,deepen=deepen,df=df,oh=oh,l=49.6,lcorr=2,d=26.4,hf=0.75,shd=3,eps=0.28);
+}
 
 module flexbatterAA(n=1,m=1,deepen=0,df=1,oh=0){
    flexbatter(n=n,m=m,deepen=deepen,df=df,oh=oh,l=50.0,lcorr=1.6,d=14.4,hf=0.80,shd=2.5,el=0.5,eps=0.28);
-}  
+}
 
 module flexbatterAAA(n=1,m=1,deepen=0,df=1,oh=0){
    flexbatter(n=n,m=m,deepen=deepen,df=df,oh=oh,l=44.5,lcorr=1.6,d=10.5,hf=0.84,shd=2,el=1,xchan=[0.5],eps=0.2);
-}  
+}
 
 module flexbatter26650(n=1,m=1){
    flexbatter(n=n,m=m,l=65.7,lcorr=0,d=26.4,hf=0.72,shd=3,eps=0.28);
-}  
+}
 
 
 module flexbatter18650x1(){ // AUTO_MAKE_STL
